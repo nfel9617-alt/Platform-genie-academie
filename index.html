@@ -29,13 +29,14 @@
         main, section.view-section { flex: 1; }
         .btn-hover-effect { transition: all 0.3s ease; }
         .btn-hover-effect:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(0,0,0,0.15); }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="bg-brand-lightbg text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased selection:bg-brand-yellow selection:text-brand-darkblue">
 
     <script>
         // رابط Web App الخاص بك
-        const API_URL = "https://script.google.com/macros/s/AKfycbwfhsdG7vvA0tODl2T0Mda3A-r7wvDDNv7KhETJc_PkGCcQir90NklAHvX6tcKCfekCSg/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbx3K53EXgTF8H18YidGZkuKdXpoRMZXTk3j7tgv3VGfKtxccljWUtTazykg6iOm9mNl/exec";
         let currentUser = null;
         let syncInterval = null;
 
@@ -65,6 +66,16 @@
                 btn.innerHTML = btn.dataset.oldText || btn.innerHTML;
                 btn.disabled = false;
             }
+        }
+
+        // تنسيق وقت اللايف بشكل مقروء بالعربية
+        function formatLiveTime(dt) {
+            if (!dt) return '';
+            try {
+                const d = new Date(dt);
+                if (isNaN(d.getTime())) return dt;
+                return d.toLocaleString('ar-DZ', { dateStyle: 'medium', timeStyle: 'short' });
+            } catch(e) { return dt; }
         }
     </script>
 
@@ -170,72 +181,89 @@
                 </div>
             </div>
         </section>
-<!-- قسم نتائج ونقاط الطلبة المتفوقين -->
-<section id="resultsSection" class="max-w-7xl mx-auto px-6 py-8">
-    <div class="text-center space-y-3 mb-10">
-        <span class="px-4 py-1.5 rounded-full bg-yellow-100 text-brand-darkblue dark:bg-yellow-900/40 dark:text-brand-yellow font-extrabold text-xs inline-block border border-yellow-300">
-           ثمار الجهد والعمل
-        </span>
-        <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
-            علامات ونقاط <span class="gradient-text">طلبتنا المتفوقين</span>
-        </h2>
-        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">
-            نماذج من كشوف النقاط والعلامات الكاملة لطلابنا في امتحان البكالوريا
-        </p>
-    </div>
 
-    <!-- شبكة من 9 صور لنتائج الطلاب -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-        
-        <!-- الصورة 1 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/1.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+1';" alt="نتيجة طالب 1" class="w-full h-64 object-cover">
-        </div>
+        <!-- قسم الدورات المنشورة (تظهر لكل زائر) -->
+        <section id="publicCoursesSection" class="max-w-7xl mx-auto px-6">
+            <div class="text-center space-y-3 mb-10">
+                <span class="px-4 py-1.5 rounded-full bg-blue-100 text-brand-blue dark:bg-blue-900/40 dark:text-brand-yellow font-extrabold text-xs inline-block border border-blue-200 dark:border-slate-700">
+                    📚 دوراتنا
+                </span>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
+                    الدورات <span class="gradient-text">المتوفرة حاليا</span>
+                </h2>
+                <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">
+                    سجل حساب جديد واشترك للوصول لكل محتوى الدورة من فيديوهات وملفات
+                </p>
+            </div>
+            <div id="publicCoursesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p class="text-sm text-slate-400 text-center col-span-full py-6">جاري تحميل الدورات...</p>
+            </div>
+        </section>
 
-        <!-- الصورة 2 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/2.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+2';" alt="نتيجة طالب 2" class="w-full h-64 object-cover">
-        </div>
+        <!-- قسم نتائج ونقاط الطلبة المتفوقين -->
+        <section id="resultsSection" class="max-w-7xl mx-auto px-6 py-8">
+            <div class="text-center space-y-3 mb-10">
+                <span class="px-4 py-1.5 rounded-full bg-yellow-100 text-brand-darkblue dark:bg-yellow-900/40 dark:text-brand-yellow font-extrabold text-xs inline-block border border-yellow-300">
+                   ثمار الجهد والعمل
+                </span>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
+                    علامات ونقاط <span class="gradient-text">طلبتنا المتفوقين</span>
+                </h2>
+                <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">
+                    نماذج من كشوف النقاط والعلامات الكاملة لطلابنا في امتحان البكالوريا
+                </p>
+            </div>
 
-        <!-- الصورة 3 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/3.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+3';" alt="نتيجة طالب 3" class="w-full h-64 object-cover">
-        </div>
+            <!-- شبكة من 9 صور لنتائج الطلاب -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+                
+                <!-- الصورة 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/1.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+1';" alt="نتيجة طالب 1" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 4 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/4.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+4';" alt="نتيجة طالب 4" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/2.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+2';" alt="نتيجة طالب 2" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 5 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/5.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+5';" alt="نتيجة طالب 5" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/3.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+3';" alt="نتيجة طالب 3" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 6 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/6.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+6';" alt="نتيجة طالب 6" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 4 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/4.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+4';" alt="نتيجة طالب 4" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 7 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/7.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+7';" alt="نتيجة طالب 7" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 5 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/5.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+5';" alt="نتيجة طالب 5" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 8 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/8.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+8';" alt="نتيجة طالب 8" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 6 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/6.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+6';" alt="نتيجة طالب 6" class="w-full h-64 object-cover">
+                </div>
 
-        <!-- الصورة 9 -->
-        <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
-            <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/9.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+9';" alt="نتيجة طالب 9" class="w-full h-64 object-cover">
-        </div>
+                <!-- الصورة 7 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/7.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+7';" alt="نتيجة طالب 7" class="w-full h-64 object-cover">
+                </div>
 
-    </div>
-</section>
+                <!-- الصورة 8 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/8.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+8';" alt="نتيجة طالب 8" class="w-full h-64 object-cover">
+                </div>
 
+                <!-- الصورة 9 -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 hover:scale-105 transition duration-300">
+                    <img src="https://raw.githubusercontent.com/nfel9617-alt/Platform-genie-academie/main/9.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/104a8e/ffffff?text=نقطة+طالب+9';" alt="نتيجة طالب 9" class="w-full h-64 object-cover">
+                </div>
 
+            </div>
+        </section>
 
     </main>
 
@@ -255,6 +283,22 @@
                     <input type="text" id="courseTitle" placeholder="عنوان الدورة" required class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 text-sm focus:ring-2 focus:ring-brand-blue outline-none transition">
                     <textarea id="courseDesc" placeholder="وصف الدورة والأهداف" required class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 text-sm h-24 resize-none focus:ring-2 focus:ring-brand-blue outline-none transition"></textarea>
                     <input type="number" id="coursePrice" placeholder="السعر (DA)" required class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 text-sm focus:ring-2 focus:ring-brand-blue outline-none transition">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1"><i class="fa-solid fa-image"></i> صورة الدورة (اختياري):</label>
+                        <div class="flex items-center gap-3">
+                            <img id="courseImagePreview" src="" class="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700 hidden">
+                            <input type="file" id="courseImageFile" accept="image/*" class="hidden" onchange="handleCourseImageSelect(event)">
+                            <button type="button" onclick="document.getElementById('courseImageFile').click()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition">اختر صورة</button>
+                            <span id="courseImageFileName" class="text-xs text-slate-400"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="courseImage">
+
+                    <div class="border-t border-slate-100 dark:border-slate-700 pt-4 space-y-2">
+                        <label class="text-sm font-bold text-red-500 flex items-center gap-1"><i class="fa-solid fa-tower-broadcast"></i> بث مباشر (اختياري):</label>
+                        <input type="text" id="courseLiveLink" placeholder="رابط اللايف (Zoom / Meet / YouTube...)" class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 text-xs outline-none focus:ring-2 focus:ring-red-400 transition">
+                        <input type="datetime-local" id="courseLiveTime" class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 text-xs outline-none focus:ring-2 focus:ring-red-400 transition">
+                    </div>
 
                     <div class="border-t border-slate-100 dark:border-slate-700 pt-4">
                         <div class="flex justify-between items-center mb-3">
@@ -287,11 +331,35 @@
                     <span>أسئلة الطلاب والمنتدى</span>
                     <span class="text-xs font-normal text-green-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> مباشر</span>
                 </h3>
-                <div id="teacherForumList" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 scrollbar-thin"></div>
-                <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <input type="text" id="tForumMsgInput" placeholder="أجيبي على أسئلة الطلاب..." class="flex-1 p-2 bg-transparent text-sm outline-none" onkeypress="if(event.key==='Enter') postForumMessage('teacher')">
-                    <button onclick="postForumMessage('teacher')" class="px-5 bg-brand-yellow text-brand-darkblue rounded-xl font-bold hover:bg-yellow-400 transition"><i class="fa-solid fa-paper-plane"></i></button>
+                <div id="teacherForumList" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-2 scrollbar-thin"></div>
+                <div id="tForumAttachPreview" class="text-xs text-slate-500 px-2 pb-1 hidden"></div>
+                <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex-wrap items-center">
+                    <input type="text" id="tForumMsgInput" placeholder="أجيبي على أسئلة الطلاب..." class="flex-1 p-2 bg-transparent text-sm outline-none min-w-[120px]" onkeypress="if(event.key==='Enter') postForumMessage('teacher')">
+                    <input type="file" id="tForumImageInput" accept="image/*" class="hidden" onchange="handleForumImageSelect('teacher')">
+                    <button type="button" onclick="document.getElementById('tForumImageInput').click()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="إرفاق صورة"><i class="fa-solid fa-image"></i></button>
+                    <button type="button" id="tForumMicBtn" onclick="toggleForumRecording('teacher')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="تسجيل صوتي"><i class="fa-solid fa-microphone"></i></button>
+                    <button onclick="postForumMessage('teacher')" class="px-5 h-9 bg-brand-yellow text-brand-darkblue rounded-xl font-bold hover:bg-yellow-400 transition"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
+            </div>
+        </div>
+
+        <!-- إرسال رمز تفعيل من طرف الأستاذة + طلبات الدفع المعلقة -->
+        <div class="glass-card p-6 rounded-3xl mt-8 space-y-6">
+            <h3 class="font-bold text-xl border-b pb-2 dark:border-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-key text-brand-blue dark:text-brand-yellow"></i> إرسال رمز تفعيل للطالب
+            </h3>
+
+            <!-- إرسال يدوي مباشر بدون انتظار وصل -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                <input type="email" id="manualCodeEmail" placeholder="بريد الطالب" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-blue">
+                <input type="text" id="manualCodeCourseId" placeholder="معرف الدورة (مثال: C1)" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-blue">
+                <button onclick="issueActivationCode()" class="py-3 bg-brand-blue text-white font-bold rounded-xl hover:bg-brand-darkblue transition text-sm"><i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرمز الآن</button>
+            </div>
+
+            <!-- قائمة طلبات الدفع (صور الوصولات) -->
+            <div>
+                <h4 class="font-bold text-sm text-slate-600 dark:text-slate-300 mb-3">طلبات الدفع بانتظار التفعيل:</h4>
+                <div id="pendingReceiptsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
         </div>
     </section>
@@ -299,6 +367,10 @@
     <!-- فضاء الطالب -->
     <section id="studentSection" class="view-section hidden max-w-7xl mx-auto px-6 py-10">
         <h2 class="text-3xl font-black mb-8 text-brand-blue dark:text-white border-b border-slate-200 dark:border-slate-800 pb-4">فضاء التعلم الخاص بك</h2>
+
+        <!-- عنصر مخفي لاختيار صورة وصل الدفع -->
+        <input type="file" id="receiptFileInput" accept="image/*" class="hidden" onchange="handleReceiptFileSelected()">
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- قائمة دورات الطالب -->
             <div class="lg:col-span-2 space-y-8">
@@ -314,10 +386,14 @@
                     <span>المنتدى التفاعلي مع الأستاذة</span>
                     <span class="text-xs font-normal text-green-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> مباشر</span>
                 </h3>
-                <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-4 pr-2 scrollbar-thin"></div>
-                <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <input type="text" id="sForumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-2 bg-transparent text-sm outline-none" onkeypress="if(event.key==='Enter') postForumMessage('student')">
-                    <button onclick="postForumMessage('student')" class="px-5 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-darkblue transition"><i class="fa-solid fa-paper-plane"></i></button>
+                <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-2 pr-2 scrollbar-thin"></div>
+                <div id="sForumAttachPreview" class="text-xs text-slate-500 px-2 pb-1 hidden"></div>
+                <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex-wrap items-center">
+                    <input type="text" id="sForumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-2 bg-transparent text-sm outline-none min-w-[120px]" onkeypress="if(event.key==='Enter') postForumMessage('student')">
+                    <input type="file" id="sForumImageInput" accept="image/*" class="hidden" onchange="handleForumImageSelect('student')">
+                    <button type="button" onclick="document.getElementById('sForumImageInput').click()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="إرفاق صورة"><i class="fa-solid fa-image"></i></button>
+                    <button type="button" id="sForumMicBtn" onclick="toggleForumRecording('student')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="تسجيل صوتي"><i class="fa-solid fa-microphone"></i></button>
+                    <button onclick="postForumMessage('student')" class="px-5 h-9 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-darkblue transition"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
@@ -413,6 +489,24 @@
             document.getElementById(id).classList.remove('hidden');
         }
 
+        // حالة صورة الدورة المختارة (ترفع فعليا بدل إدخال رابط يدويا)
+        let selectedCourseImage = { base64: null, mime: null };
+
+        function handleCourseImageSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                selectedCourseImage.base64 = reader.result;
+                selectedCourseImage.mime = file.type;
+                const preview = document.getElementById('courseImagePreview');
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+                document.getElementById('courseImageFileName').innerText = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function addVideoInput(title = '', url = '') {
             const container = document.getElementById('videosContainer');
             const div = document.createElement('div');
@@ -477,6 +571,7 @@
                 if (res.role === 'teacher') {
                     showSection('teacherSection');
                     loadTeacherCourses();
+                    loadPendingReceipts();
                     startAutoSync('teacher');
                 } else {
                     showSection('studentSection');
@@ -516,6 +611,11 @@
                 title: document.getElementById('courseTitle').value,
                 description: document.getElementById('courseDesc').value,
                 price: document.getElementById('coursePrice').value,
+                imageUrl: document.getElementById('courseImage').value,
+                imageBase64: selectedCourseImage.base64 || undefined,
+                imageMime: selectedCourseImage.mime || undefined,
+                liveLink: document.getElementById('courseLiveLink').value,
+                liveTime: document.getElementById('courseLiveTime').value,
                 videos: videos, files: files
             };
 
@@ -524,13 +624,17 @@
             setBtnLoading(btn, false);
             resetCourseForm();
             loadTeacherCourses();
+            loadPublicCourses();
         }
 
         function resetCourseForm() {
             document.getElementById('formTitle').innerText = "إضافة / تعديل دورة";
-            ['courseId', 'courseTitle', 'courseDesc', 'coursePrice'].forEach(id => document.getElementById(id).value = '');
+            ['courseId', 'courseTitle', 'courseDesc', 'coursePrice', 'courseImage', 'courseLiveLink', 'courseLiveTime'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('videosContainer').innerHTML = '';
             document.getElementById('filesContainer').innerHTML = '';
+            selectedCourseImage = { base64: null, mime: null };
+            document.getElementById('courseImagePreview').classList.add('hidden');
+            document.getElementById('courseImageFileName').innerText = '';
         }
 
         function editCourse(c) {
@@ -539,6 +643,13 @@
             document.getElementById('courseTitle').value = c.Title || '';
             document.getElementById('courseDesc').value = c.Description || '';
             document.getElementById('coursePrice').value = c.Price || '';
+            document.getElementById('courseImage').value = c.ImageURL || '';
+            selectedCourseImage = { base64: null, mime: null };
+            document.getElementById('courseImageFileName').innerText = '';
+            const courseImgPreview = document.getElementById('courseImagePreview');
+            if (c.ImageURL) { courseImgPreview.src = c.ImageURL; courseImgPreview.classList.remove('hidden'); } else { courseImgPreview.classList.add('hidden'); }
+            document.getElementById('courseLiveLink').value = c.LiveLink || '';
+            document.getElementById('courseLiveTime').value = c.LiveTime || '';
             document.getElementById('videosContainer').innerHTML = '';
             document.getElementById('filesContainer').innerHTML = '';
             try { JSON.parse(c.VideoLinks || '[]').forEach(v => addVideoInput(v.title, v.url)); } catch(e){}
@@ -550,6 +661,7 @@
             const res = await postData({ action: 'deleteCourse', courseId: courseId });
             alert(res.message);
             loadTeacherCourses();
+            loadPublicCourses();
         }
 
         async function loadTeacherCourses() {
@@ -561,9 +673,13 @@
             }
             container.innerHTML = courses.map(c => `
                 <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex flex-col md:flex-row md:items-center justify-between text-sm border border-slate-100 dark:border-slate-700 shadow-sm gap-3">
-                    <div>
-                        <div class="font-bold text-brand-blue dark:text-brand-yellow text-base">${c.Title} <span class="text-xs text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full ml-1">${c.CourseID}</span></div>
-                        <div class="text-slate-500 font-bold mt-1">${c.Price} DA</div>
+                    <div class="flex items-center gap-3">
+                        ${c.ImageURL ? `<img src="${c.ImageURL}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0">` : ''}
+                        <div>
+                            <div class="font-bold text-brand-blue dark:text-brand-yellow text-base">${c.Title} <span class="text-xs text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full ml-1">${c.CourseID}</span></div>
+                            <div class="text-slate-500 font-bold mt-1">${c.Price} DA</div>
+                            ${c.LiveLink ? `<div class="text-[11px] text-red-500 font-bold mt-1"><i class="fa-solid fa-tower-broadcast ml-1"></i> بث مباشر ${c.LiveTime ? formatLiveTime(c.LiveTime) : ''}</div>` : ''}
+                        </div>
                     </div>
                     <div class="flex gap-2">
                         <button onclick='editCourse(${JSON.stringify(c)})' class="px-4 py-1.5 bg-brand-yellow text-brand-darkblue font-bold rounded-xl hover:brightness-105 transition">تعديل</button>
@@ -571,6 +687,32 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // عرض الدورات المنشورة لكل زائر في الواجهة الرئيسية
+        async function loadPublicCourses() {
+            const courses = await fetchData('getCourses');
+            const container = document.getElementById('publicCoursesList');
+            if(!Array.isArray(courses) || courses.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-400 text-center col-span-full py-6">لا توجد دورات منشورة حالياً.</p>`;
+                return;
+            }
+            container.innerHTML = courses.map(c => {
+                const hasLive = c.LiveLink && c.LiveTime;
+                return `
+                <div class="glass-card rounded-3xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 hover:scale-[1.02] transition duration-300">
+                    ${c.ImageURL ? `<img src="${c.ImageURL}" alt="${c.Title}" class="w-full h-44 object-cover">` : `<div class="w-full h-44 bg-gradient-to-br from-brand-blue to-brand-darkblue flex items-center justify-center"><i class="fa-solid fa-book-open text-4xl text-white/70"></i></div>`}
+                    <div class="p-5 space-y-3">
+                        ${hasLive ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full border border-red-200 dark:border-red-800"><i class="fa-solid fa-tower-broadcast animate-pulse"></i> بث مباشر ${formatLiveTime(c.LiveTime)}</span>` : ''}
+                        <h3 class="font-black text-lg text-brand-blue dark:text-brand-yellow">${c.Title}</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">${c.Description}</p>
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="font-extrabold text-slate-800 dark:text-white">${c.Price} DA</span>
+                            <button onclick="openModal('registerModal')" class="px-4 py-2 bg-brand-blue text-white text-xs font-bold rounded-xl hover:bg-brand-darkblue transition">اشترك الآن</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         async function loadStudentDashboard() {
@@ -595,7 +737,9 @@
 
                 return `
                     <div class="glass-card p-6 rounded-3xl shadow-md space-y-4 border ${isActivated ? 'border-green-400 dark:border-green-500 bg-green-50/30 dark:bg-green-900/10' : 'border-slate-200 dark:border-slate-700'} relative overflow-hidden">
-                        
+
+                        ${c.ImageURL ? `<img src="${c.ImageURL}" alt="${c.Title}" class="w-full h-40 object-cover rounded-2xl relative z-10">` : ''}
+
                         <div class="flex justify-between items-start relative z-10">
                             <h4 class="font-black text-lg text-brand-blue dark:text-brand-yellow">${c.Title}</h4>
                             <span class="text-[11px] px-3 py-1 rounded-full font-bold ${isActivated ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}">
@@ -604,6 +748,16 @@
                         </div>
                         <p class="text-sm text-slate-600 dark:text-slate-300 relative z-10">${c.Description}</p>
                         <div class="font-extrabold text-lg text-slate-800 dark:text-white relative z-10">${c.Price} DA</div>
+
+                        ${isActivated && c.LiveLink ? `
+                            <div class="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-center justify-between gap-2 relative z-10 flex-wrap">
+                                <div class="text-xs font-bold text-red-600 dark:text-red-400">
+                                    <i class="fa-solid fa-tower-broadcast animate-pulse ml-1"></i>
+                                    بث مباشر ${c.LiveTime ? '- ' + formatLiveTime(c.LiveTime) : ''}
+                                </div>
+                                <a href="${c.LiveLink}" target="_blank" class="text-xs px-3 py-1.5 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition">انضم الآن</a>
+                            </div>
+                        ` : ''}
 
                         ${isActivated ? `
                             <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700 relative z-10">
@@ -619,7 +773,7 @@
                             </div>
                         ` : `
                             <div class="space-y-3 pt-4 relative z-10 border-t border-slate-100 dark:border-slate-700">
-                                <button onclick="submitReceipt('${c.CourseID}')" class="w-full py-3 bg-brand-yellow text-brand-darkblue font-bold rounded-xl text-sm shadow hover:bg-yellow-400 transition"><i class="fa-solid fa-file-invoice-dollar ml-1"></i> رفع وصل الدفع واستلام الكود</button>
+                                <button onclick="submitReceipt('${c.CourseID}')" class="w-full py-3 bg-brand-yellow text-brand-darkblue font-bold rounded-xl text-sm shadow hover:bg-yellow-400 transition"><i class="fa-solid fa-camera ml-1"></i> رفع صورة وصل الدفع واستلام الكود</button>
                                 <button onclick="enterActivationCode('${c.CourseID}')" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition">إدخال رمز التفعيل 🔑</button>
                             </div>
                         `}
@@ -628,13 +782,35 @@
             }).join('');
         }
 
-        async function submitReceipt(courseId) {
-            const url = prompt("أدخل رابط صورة وصل الدفع (CCP/BaridiMob):");
-            if (url) {
-                const res = await postData({ action: 'submitReceipt', studentEmail: currentUser.student.Email, courseId: courseId, receiptUrl: url });
+        // رفع صورة وصل الدفع (بدل إدخال رابط يدويا)
+        let pendingReceiptCourseId = null;
+
+        function submitReceipt(courseId) {
+            pendingReceiptCourseId = courseId;
+            document.getElementById('receiptFileInput').click();
+        }
+
+        async function handleReceiptFileSelected() {
+            const input = document.getElementById('receiptFileInput');
+            const file = input.files[0];
+            input.value = '';
+            if (!file || !pendingReceiptCourseId) return;
+
+            const courseId = pendingReceiptCourseId;
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const res = await postData({
+                    action: 'submitReceipt',
+                    studentEmail: currentUser.student.Email,
+                    courseId: courseId,
+                    receiptBase64: reader.result,
+                    receiptMime: file.type
+                });
                 alert(res.message);
+                pendingReceiptCourseId = null;
                 loadStudentDashboard();
-            }
+            };
+            reader.readAsDataURL(file);
         }
 
         async function enterActivationCode(courseId) {
@@ -644,6 +820,48 @@
                 alert(res.message);
                 if(res.status === 'success') loadStudentDashboard();
             }
+        }
+
+        // إرسال / تجديد رمز تفعيل من طرف الأستاذة مباشرة
+        async function issueActivationCode(email, courseId) {
+            const targetEmail = email || document.getElementById('manualCodeEmail').value.trim();
+            const targetCourseId = courseId || document.getElementById('manualCodeCourseId').value.trim();
+            if (!targetEmail || !targetCourseId) {
+                alert('يرجى إدخال بريد الطالب ومعرف الدورة');
+                return;
+            }
+            const res = await postData({ action: 'issueActivationCode', studentEmail: targetEmail, courseId: targetCourseId });
+            alert(res.message);
+            if (res.status === 'success') {
+                document.getElementById('manualCodeEmail').value = '';
+                document.getElementById('manualCodeCourseId').value = '';
+                loadPendingReceipts();
+            }
+        }
+
+        // عرض طلبات الدفع المعلقة مع صورة الوصل، مع زر لإرسال/تجديد رمز التفعيل مباشرة
+        async function loadPendingReceipts() {
+            const container = document.getElementById('pendingReceiptsList');
+            if (!container) return;
+            const subs = await fetchData('getAllSubscriptions');
+            if (!Array.isArray(subs) || subs.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-400 col-span-full text-center py-4">لا توجد طلبات دفع حالياً.</p>`;
+                return;
+            }
+            const pending = subs.filter(s => s.Status !== 'مفعل');
+            if (pending.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-400 col-span-full text-center py-4">لا توجد طلبات دفع بانتظار التفعيل.</p>`;
+                return;
+            }
+            container.innerHTML = pending.map(s => `
+                <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-2">
+                    ${s.ReceiptURL ? `<img src="${s.ReceiptURL}" class="w-full h-32 object-cover rounded-xl cursor-pointer" onclick="window.open('${s.ReceiptURL}','_blank')" alt="صورة الوصل">` : `<div class="w-full h-32 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-xs text-slate-400">لا توجد صورة وصل</div>`}
+                    <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${s.StudentEmail || ''}</div>
+                    <div class="text-xs text-slate-500">الدورة: ${s.CourseID || ''}</div>
+                    <div class="text-[11px] text-slate-400">الكود الحالي: ${s.ActivationCode || '-'}</div>
+                    <button onclick="issueActivationCode('${s.StudentEmail}', '${s.CourseID}')" class="w-full py-2 bg-brand-yellow text-brand-darkblue text-xs font-bold rounded-lg hover:bg-yellow-400 transition"><i class="fa-solid fa-key ml-1"></i> إرسال / تجديد رمز التفعيل</button>
+                </div>
+            `).join('');
         }
 
         async function loadForumMessages(elementId) {
@@ -671,15 +889,94 @@
                             <span class="text-[10px] text-slate-400 mr-2">${m.Timestamp || ''}</span>
                         </div>
                     </div>
-                    <p class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed font-medium pr-1">${m.MessageText || ''}</p>
+                    ${m.MessageText ? `<p class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed font-medium pr-1">${m.MessageText}</p>` : ''}
+                    ${m.ImageURL ? `<img src="${m.ImageURL}" class="mt-2 rounded-xl max-h-52 object-cover cursor-pointer" onclick="window.open('${m.ImageURL}','_blank')" alt="صورة مرفقة">` : ''}
+                    ${m.AudioURL ? `<audio controls class="mt-2 w-full h-9"><source src="${m.AudioURL}"></audio>` : ''}
                     ${currentUser?.role === 'teacher' ? `<button onclick="deleteForumMessage('${m.MessageID}')" class="text-red-400 hover:text-red-600 font-bold absolute top-3 left-3 text-[11px] transition"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
             `}).join('');
         }
 
+        // حالة المرفقات المؤقتة (صورة/تسجيل صوتي) قبل الإرسال في المنتدى
+        let forumAttachments = {
+            student: { image: null, imageMime: null, audio: null, audioMime: null },
+            teacher: { image: null, imageMime: null, audio: null, audioMime: null }
+        };
+        let mediaRecorders = { student: null, teacher: null };
+        let audioChunks = { student: [], teacher: [] };
+
+        function handleForumImageSelect(type) {
+            const input = document.getElementById(type === 'teacher' ? 'tForumImageInput' : 'sForumImageInput');
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                forumAttachments[type].image = reader.result;
+                forumAttachments[type].imageMime = file.type;
+                updateForumAttachPreview(type);
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        async function toggleForumRecording(type) {
+            const btn = document.getElementById(type === 'teacher' ? 'tForumMicBtn' : 'sForumMicBtn');
+            if (mediaRecorders[type] && mediaRecorders[type].state === 'recording') {
+                mediaRecorders[type].stop();
+                btn.classList.remove('bg-red-500', 'text-white');
+                return;
+            }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('المتصفح لا يدعم تسجيل الصوت');
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const recorder = new MediaRecorder(stream);
+                audioChunks[type] = [];
+                recorder.ondataavailable = e => { if (e.data.size > 0) audioChunks[type].push(e.data); };
+                recorder.onstop = () => {
+                    const blob = new Blob(audioChunks[type], { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        forumAttachments[type].audio = reader.result;
+                        forumAttachments[type].audioMime = 'audio/webm';
+                        updateForumAttachPreview(type);
+                    };
+                    reader.readAsDataURL(blob);
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                recorder.start();
+                mediaRecorders[type] = recorder;
+                btn.classList.add('bg-red-500', 'text-white');
+            } catch (e) {
+                alert('تعذر الوصول إلى الميكروفون، تأكد من منح الإذن للمتصفح');
+            }
+        }
+
+        function updateForumAttachPreview(type) {
+            const el = document.getElementById(type === 'teacher' ? 'tForumAttachPreview' : 'sForumAttachPreview');
+            const att = forumAttachments[type];
+            let parts = [];
+            if (att.image) parts.push('📷 صورة جاهزة للإرسال');
+            if (att.audio) parts.push('🎙️ تسجيل صوتي جاهز للإرسال');
+            if (parts.length) {
+                el.innerHTML = parts.join(' • ') + ` <button type="button" onclick="clearForumAttachments('${type}')" class="text-red-500 font-bold hover:underline">إلغاء</button>`;
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        function clearForumAttachments(type) {
+            forumAttachments[type] = { image: null, imageMime: null, audio: null, audioMime: null };
+            updateForumAttachPreview(type);
+        }
+
         async function postForumMessage(type) {
             const input = document.getElementById(type === 'teacher' ? 'tForumMsgInput' : 'sForumMsgInput');
-            if (!input.value.trim()) return;
+            const att = forumAttachments[type];
+            if (!input.value.trim() && !att.image && !att.audio) return;
 
             const text = input.value;
             input.value = '';
@@ -689,9 +986,14 @@
                 email: currentUser.student?.Email || "teacher@nawat.com",
                 name: currentUser.name || (currentUser.student.FirstName + ' ' + currentUser.student.LastName),
                 role: currentUser.role === 'teacher' ? 'الأستاذة' : 'طالب',
-                messageText: text
+                messageText: text,
+                imageBase64: att.image || undefined,
+                imageMime: att.imageMime || undefined,
+                audioBase64: att.audio || undefined,
+                audioMime: att.audioMime || undefined
             });
 
+            clearForumAttachments(type);
             loadForumMessages(type === 'teacher' ? 'teacherForumList' : 'studentForumList');
         }
 
@@ -701,13 +1003,14 @@
             loadForumMessages('teacherForumList');
         }
 
-        // التحديث التلقائي الفوري للمنتدى والدورات كل 3 ثوانٍ
+        // التحديث التلقائي الفوري للمنتدى والدورات وطلبات الدفع كل 3 ثوانٍ
         function startAutoSync(role) {
             if(syncInterval) clearInterval(syncInterval);
             
             const sync = () => {
                 if (role === 'teacher') {
                     loadForumMessages('teacherForumList');
+                    loadPendingReceipts();
                 } else {
                     loadForumMessages('studentForumList');
                     loadStudentDashboard();
@@ -717,6 +1020,9 @@
             sync();
             syncInterval = setInterval(sync, 3000);
         }
+
+        // تحميل الدورات المنشورة للزوار عند فتح الصفحة
+        document.addEventListener('DOMContentLoaded', loadPublicCourses);
     </script>
 </body>
 </html>
