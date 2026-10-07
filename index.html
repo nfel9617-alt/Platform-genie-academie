@@ -36,7 +36,7 @@
 
     <script>
         // رابط Web App الخاص بك
-        const API_URL = "https://script.google.com/macros/s/AKfycbx3K53EXgTF8H18YidGZkuKdXpoRMZXTk3j7tgv3VGfKtxccljWUtTazykg6iOm9mNl/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbw8tYXBMCRveIUqTx3AtZ_IK6Jg1qJD7dM8gyPCLNzd04nPfhU0IkdgF58lAkMx1Xh0/exec";
         let currentUser = null;
         let syncInterval = null;
 
@@ -463,6 +463,15 @@
         </div>
     </div>
 
+    <!-- نافذة تشغيل الفيديو المضمّن: الفيديو يبقى داخل المنصة ولا يُفتح أبداً في تبويب أو موقع خارجي -->
+    <div id="videoPlayerModal" class="fixed inset-0 bg-black/95 hidden z-[60] flex items-center justify-center p-4" oncontextmenu="return false">
+        <button onclick="closeVideoPlayer()" class="absolute top-5 left-5 text-white hover:text-brand-yellow transition text-3xl z-10"><i class="fa-solid fa-xmark"></i></button>
+        <div id="videoPlayerTitle" class="absolute top-5 right-5 text-white font-bold text-sm bg-black/50 px-4 py-2 rounded-xl max-w-[60%] truncate"></div>
+        <div class="w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+            <iframe id="videoPlayerFrame" src="" class="w-full h-full" allow="autoplay; fullscreen" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
+        </div>
+    </div>
+
     <div id="loginModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-[2rem] max-w-md w-full p-8 relative shadow-2xl border border-slate-100 dark:border-slate-800">
             <button onclick="closeModal('loginModal')" class="absolute top-5 left-5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
@@ -505,6 +514,41 @@
                 document.getElementById('courseImageFileName').innerText = file.name;
             };
             reader.readAsDataURL(file);
+        }
+
+        // يحوّل أي رابط فيديو (بأي صيغة لصقتها الأستاذة: درايف أو يوتيوب) لرابط تضمين آمن
+        // بحيث الفيديو يبقى داخل المنصة ولا يطلع للطالب أي زر "تحميل" أو صفحة درايف كاملة
+        function toEmbeddableVideoUrl(url) {
+            if (!url) return '';
+            // Google Drive: يدعم كل الصيغ المعروفة (file/d/ID/view, open?id=, uc?id=, uc?export=download&id=...)
+            let driveId = null;
+            let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (m) driveId = m[1];
+            if (!driveId) {
+                let m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (m2 && url.includes('drive.google.com')) driveId = m2[1];
+            }
+            if (driveId) {
+                return `https://drive.google.com/file/d/${driveId}/preview`;
+            }
+            // YouTube (watch / youtu.be / embed)
+            const y = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
+            if (y) {
+                return `https://www.youtube.com/embed/${y[1]}?rel=0&modestbranding=1`;
+            }
+            // أي مصدر آخر: نحاول تضمينه كما هو
+            return url;
+        }
+
+        function openVideoPlayer(url, title) {
+            document.getElementById('videoPlayerFrame').src = toEmbeddableVideoUrl(url);
+            document.getElementById('videoPlayerTitle').innerText = title || '';
+            document.getElementById('videoPlayerModal').classList.remove('hidden');
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById('videoPlayerModal').classList.add('hidden');
+            document.getElementById('videoPlayerFrame').src = ''; // يوقف تشغيل الفيديو فور الإغلاق
         }
 
         function addVideoInput(title = '', url = '') {
@@ -763,7 +807,7 @@
                             <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700 relative z-10">
                                 <div class="text-sm font-bold text-brand-blue dark:text-brand-yellow"><i class="fa-solid fa-play-circle ml-1"></i> دروس الفيديو:</div>
                                 <div class="grid gap-2">
-                                    ${videos.length ? videos.map(v => `<a href="${v.url}" target="_blank" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-brand-blue transition flex items-center"><i class="fa-solid fa-play text-brand-blue mr-2 ml-2"></i> ${v.title}</a>`).join('') : '<span class="text-xs text-slate-400">لا توجد فيديوهات مضافة بعد.</span>'}
+                                    ${videos.length ? videos.map(v => `<button type="button" onclick="openVideoPlayer('${String(v.url||'').replace(/'/g,"\\'")}', '${String(v.title||'').replace(/'/g,"\\'")}')" class="w-full text-right p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-brand-blue transition flex items-center"><i class="fa-solid fa-play text-brand-blue mr-2 ml-2"></i> ${v.title}</button>`).join('') : '<span class="text-xs text-slate-400">لا توجد فيديوهات مضافة بعد.</span>'}
                                 </div>
                                 
                                 <div class="text-sm font-bold text-green-600 dark:text-green-400 pt-2"><i class="fa-solid fa-file-pdf ml-1"></i> ملفات PDF والتمارين:</div>
