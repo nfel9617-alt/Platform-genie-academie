@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nfel9617-alt.github.io/Platform-genie-academie/sitemap.xml
